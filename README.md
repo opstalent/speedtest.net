@@ -26,7 +26,7 @@ progress bar and optional information output as well.
 
 Code use example:
 ```js
-const speedTest = require('speedtest.net');
+const speedTest = require('@opstalent/speedtest.net');
 const test = speedTest({maxTime: 5000});
 
 test.on('data', data => {
@@ -41,7 +41,7 @@ test.on('error', err => {
 
 Visual use example:
 ```js
-const speedTest = require('speedtest.net');
+const speedTest = require('@opstalent/speedtest.net');
 
 speedTest.visual({maxTime: 5000}, (err, data) => {
   console.dir(data);
@@ -60,6 +60,7 @@ The options include:
 * `log` (Visual only) Pass a truthy value to allow the run to output results to the console in addition to showing progress, or a function to be used instead of `console.log`.
 * `serverId` ID of the server to restrict the tests against.
 * `serversUrl` URL to obtain the list of servers available for speed test. (default: http://www.speedtest.net/speedtest-servers-static.php)
+* `configUrl` URL to obtain configuration of speed test. (default: http://www.speedtest.net/speedtest-config.php)
 
 ## Events
 
@@ -75,7 +76,7 @@ will run to 100% multiple times.
 
 
 ```js
-require('speedtest.net')().on('downloadprogress', progress => {
+require('@opstalent/speedtest.net')().on('downloadprogress', progress => {
   console.log('Download progress:', progress);
 });
 ```
@@ -86,7 +87,7 @@ Fired when data is uploaded.
 The progress in percent is passed.
 
 ```js
-require('speedtest.net')().on('uploadprogress', progress => {
+require('@opstalent/speedtest.net')().on('uploadprogress', progress => {
   console.log('Upload progress:', progress);
 });
 ```
@@ -97,7 +98,7 @@ Fired when an error occurs.
 The error is passed.
 
 ```js
-require('speedtest.net')().on('error', err => {
+require('@opstalent/speedtest.net')().on('error', err => {
   console.log('Speed test error:');
   console.error(err);
 });
@@ -109,7 +110,7 @@ Fired when the configuration has been fetched from the speedtest server.
 The config is passed.
 
 ```js
-require('speedtest.net')().on('config', => {
+require('@opstalent/speedtest.net')().on('config', => {
   console.log('Configuration info:');
   console.dir(config);
 });
@@ -121,7 +122,7 @@ Fired when the list of servers has been fetched from the speedtest server.
 The list of server objects is passed.
 
 ```js
-require('speedtest.net')().on('servers', servers => {
+require('@opstalent/speedtest.net')().on('servers', servers => {
   console.log('Complete list of all available servers:');
   console.dir(servers);
 });
@@ -133,7 +134,7 @@ Fired after closest servers are pinged.
 An ordered list of server objects is passed, fastest first.
 
 ```js
-require('speedtest.net')().on('bestservers', servers => {
+require('@opstalent/speedtest.net')().on('bestservers', servers => {
   console.log('Closest servers:');
   console.dir(servers);
 });
@@ -145,7 +146,7 @@ Fired before download or upload is started on a server.
 The server object is passed.
 
 ```js
-require('speedtest.net')().on('testserver', server => {
+require('@opstalent/speedtest.net')().on('testserver', server => {
   console.log('Test server:');
   console.dir(server);
 });
@@ -159,7 +160,7 @@ The speed in megabits (1 million bits) per second is passed, after it is correct
 The associated server is the server passed in the last `testserver` event.
 
 ```js
-require('speedtest.net')().on('downloadspeed', speed => {
+require('@opstalent/speedtest.net')().on('downloadspeed', speed => {
   console.log('Download speed:', (speed * 125).toFixed(2), 'KB/s');
 });
 ```
@@ -171,7 +172,7 @@ The speed in megabits (1 million bits) per second is passed, after it is correct
 The associated server is the server passed in the last `testserver` event, which will be the fastest server from download test(s).
 
 ```js
-require('speedtest.net')().on('uploadspeed', speed => {
+require('@opstalent/speedtest.net')().on('uploadspeed', speed => {
   console.log('Upload speed:',(speed * 125).toFixed(2),'KB/s');
 });
 ```
@@ -180,7 +181,7 @@ require('speedtest.net')().on('uploadspeed', speed => {
 Fired before final download has completed to show download speed in progress, and is fired multiple times. The speed in megabits (1 million bits) per second is passed, after it is corrected to be in line with speedtest.net results. The associated server is the server passed in the most recent testserver event.
 
 ```js
-require('speedtest.net')().on('downloadspeedprogress', speed => {
+require('@opstalent/speedtest.net')().on('downloadspeedprogress', speed => {
   console.log('Download speed (in progress):', (speed * 125).toFixed(2), 'KB/s');
 });
 ```
@@ -189,7 +190,7 @@ require('speedtest.net')().on('downloadspeedprogress', speed => {
 Fired before final download has completed to show upload speed in progress, and is fired multiple times. The speed in megabits (1 million bits) per second is passed, after it is corrected to be in line with speedtest.net results. The associated server is the server passed in the most recent testserver event.
 
 ```js
-require('speedtest.net')().on('uploadspeedprogress', speed => {
+require('@opstalent/speedtest.net')().on('uploadspeedprogress', speed => {
   console.log('Upload speed (in progress):', (speed * 125).toFixed(2), 'KB/s');
 });
 ```
@@ -200,7 +201,7 @@ Fired when the data has been uploaded to SpeedTest.net server.
 The url of the result is passed, or `undefined` on error.
 
 ```js
-require('speedtest.net')().on('result', url => {
+require('@opstalent/speedtest.net')().on('result', url => {
   if (!url) {
     console.log('Could not successfully post test results.');
   } else {
@@ -216,7 +217,7 @@ Fired when tests are done with all relevant information.
 The data is passed.
 
 ```js
-require('speedtest.net')().on('data', data => {
+require('@opstalent/speedtest.net')().on('data', data => {
   console.dir(data);
 });
 ```
@@ -261,7 +262,7 @@ An object with too much data is passed.
 Note that it is not fired when an error occurs.
 
 ```js
-require('speedtest.net')().on('done', dataOverload => {
+require('@opstalent/speedtest.net')().on('done', dataOverload => {
   console.log('TL;DR:');
   console.dir(dataOverload);
   console.log('The speed test has completed successfully.');
