@@ -252,7 +252,7 @@ function pingServer(server, callback) {
     ;
 
   function nextPing() {
-    var start = process.hrtime()
+    var start = (new Date()).getTime()
       , complete
       ;
 
@@ -266,8 +266,8 @@ function pingServer(server, callback) {
     getHttp(url.resolve(server.url, 'latency.txt'), function(err, data) {
       if (complete) return; // already hit timeout
       complete = true;
-      var diff = process.hrtime(start);
-      diff = diff[0] + diff[1] * 1e-9; //seconds
+      var diff = (new Date()).getTime() - start;
+      diff /= 1000; // seconds
       if (!err && data.substr(0, 9) !== 'test=test') err = new Error('Unknown latency file');
       if (err) diff = 3600; //an hour...
       if (diff < bestTime) bestTime = diff;
@@ -340,7 +340,7 @@ function downloadSpeed(urls, maxTime, callback) {
 
   next();
 
-  timeStart = process.hrtime();
+  timeStart = (new Date()).getTime();
 
   function next() {
     if (started >= todo) return; //all are started
@@ -354,14 +354,14 @@ function downloadSpeed(urls, maxTime, callback) {
     started++;
 
     getHttp(url, true, function(err, count) { //discard all data and return byte count
-      var diff = process.hrtime(timeStart)
+      var diff = (new Date()).getTime() - timeStart
         , timePct
         , amtPct
         , speed
         , fixed
         ;
 
-      diff = diff[0] + diff[1] * 1e-9; //seconds
+      diff /= 1000; // seconds
 
       running--;
       totalBytes += count;
@@ -415,7 +415,7 @@ function uploadSpeed(url, sizes, maxTime, callback) {
 
   next();
 
-  timeStart = process.hrtime();
+  timeStart = (new Date()).getTime();
 
   function next() {
     if (started >= todo) return; //all are started
@@ -433,14 +433,14 @@ function uploadSpeed(url, sizes, maxTime, callback) {
       if (err) {
         count = 0;
       }
-      var diff = process.hrtime(timeStart)
+      var diff = (new Date()).getTime() - timeStart
         , timePct
         , amtPct
         , speed
         , fixed
         ;
 
-      diff = diff[0] + diff[1] * 1e-9; //seconds
+      diff /= 1000; // seconds
 
       running--;
       totalBytes += count;
