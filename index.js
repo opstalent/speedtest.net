@@ -33,6 +33,10 @@ var parseXML     = require('xml2js').parseString
   , EventEmitter = require('events').EventEmitter
   ;
 
+if ('undefined' === typeof XmlHttpRequest) {
+  var XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
+}
+
 // These numbers were obtained by measuring and averaging both using this module and the official speedtest.net
 var speedTestDownloadCorrectionFactor = 1.135
   , speedTestUploadCorrectionFactor   = 1.139
@@ -185,48 +189,15 @@ function randomPutHttp(theUrl, size, callback) {
 
   options.method = 'POST';
 
-  dataBlock = (function() {
-    var d = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    while (d.length < 1024 * 16) d += d;
-    return d.substr(0, 1024 * 16);
-  }());
+  var req = new XMLHttpRequest();
 
-  http = options.protocol == 'https:' ? require('https') : require('http');
+  req.open(options.method, options.href, true);
 
-  delete options.protocol;
+  req.onload = function(e) { 
+    callback(null, size);
+  };
 
-  var req = http.request(options, function(res) {
-    var data = '';
-    res.on('error', callback);
-    res.on('data', function(newData) {
-      //discard
-    });
-    res.on('end', function() {
-      // Some cases (like HTTP 413) will interrupt the upload, but still return a response
-      callback(null, size - toSend);
-    });
-  });
-
-  req.on('error', callback);
-
-  function write() {
-    do {
-      if (!toSend) {
-        return; //we're done sending...
-      }
-      var data = dataBlock;
-      if (!sent1) {
-        sent1 = true;
-        data = 'content1=' + data;
-      }
-      data = data.substr(0, toSend);
-      toSend -= data.length;
-    } while (req.write(data));
-  }
-
-  req.on('drain', write);
-
-  write();
+  req.send('#'.repeat(size));
 }
 
 function getXML(xmlurl, callback) {
@@ -465,8 +436,6 @@ function uploadSpeed(url, sizes, maxTime, callback) {
         next();
       }
     });
-
-    next(); //Try another
   }
 }
 
