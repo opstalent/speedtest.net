@@ -698,7 +698,9 @@ function speedTest(options) {
         ;
 
       self.emit('data', data);
-      postResults();
+      if ('undefined' === typeof window) {
+        postResults();
+      }
     });
   }
 
